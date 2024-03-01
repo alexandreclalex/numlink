@@ -15,6 +15,20 @@ BOX_DRAWING_CHARS = {
     ('W', 'N'): '┗',
 }
 
+KEY_TO_DIR = {
+    'KEY_RIGHT': 'W',
+    'KEY_LEFT': 'E',
+    'KEY_UP': 'N',
+    'KEY_DOWN': 'S'
+}
+
+MOVE = {
+    'N': (0, -1),
+    'S': (0, 1),
+    'W': (-1, 0),
+    'E': (1, 0)
+}
+
 def main(stdscr: curses.window):
     # Clear screen
     stdscr.clear()
