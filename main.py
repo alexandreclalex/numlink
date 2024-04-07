@@ -1,23 +1,35 @@
 import curses
 
 BOX_DRAWING_CHARS = {
-    ('S', 'N'): '┃',
-    ('N', 'S'): '┃',
-    ('E', 'W'): '━',
-    ('W', 'E'): '━',
-    ('S', 'E'): '┏',
-    ('E', 'S'): '┏',
-    ('S', 'W'): '┓',
-    ('W', 'S'): '┓',
-    ('N', 'E'): '┛',
-    ('E', 'N'): '┛',
-    ('N', 'W'): '┗',
-    ('W', 'N'): '┗',
+    'N': {
+        'N': '┃',
+        'E': '┏',
+        'S': '┃',
+        'W': '┓',
+    },
+    'E': {
+        'N': '┛',
+        'E': '━',
+        'S': '┓',
+        'W': '━',
+    },
+    'S': {
+        'N': '┃',
+        'E': '┗',
+        'S': '┃',
+        'W': '┛',
+    },
+    'W': {
+        'N': '┗',
+        'E': '━',
+        'S': '┏',
+        'W': '━',
+    },
 }
 
 KEY_TO_DIR = {
-    'KEY_RIGHT': 'W',
-    'KEY_LEFT': 'E',
+    'KEY_RIGHT': 'E',
+    'KEY_LEFT': 'W',
     'KEY_UP': 'N',
     'KEY_DOWN': 'S'
 }
@@ -35,10 +47,28 @@ def main(stdscr: curses.window):
 
     x, y = 0, 0
     last = 'E'
-    
+    draw = False
+    prev = None
     while True:
+        if prev == None:
+            prev = chr(stdscr.inch(y, x))
+        stdscr.addstr(y, x, '░')
         key = stdscr.getkey()
-        stdscr.addstr(0, 0, key)
+        if key == ' ':  
+            draw = not draw
+        elif key in KEY_TO_DIR:
+            direction = KEY_TO_DIR[key]
+            if draw:
+                stdscr.addstr(y, x, BOX_DRAWING_CHARS[last][direction])
+            else:
+                stdscr.addstr(y, x, prev)
+            prev = None
+            dx, dy = MOVE[direction]
+            x += dx
+            y += dy
+            last = direction
+        else:
+            break
         
 
     stdscr.refresh()
